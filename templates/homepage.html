@@ -3,26 +3,53 @@
 {% block content %}
 
 <div class="container">
+
+    <!-- HEADER -->
     <div class="row text-center">
         <h1 class="mt-5">Witaj w mojej bibliotece filmów</h1>
         <p class="lead">Znajdziesz tutaj tylko najlepsze tytuły!</p>
     </div>
 
+    <!-- LIST FILTER BUTTONS -->
+    <div class="text-center mb-4">
+
+        {% set lists = ["popular","top_rated","now_playing","upcoming"] %}
+
+        {% for list in lists %}
+            <a href="{{ url_for('homepage', list_name=list) }}"
+               class="btn btn-outline-info m-1
+               {% if current_list == list %} active {% endif %}">
+               {{ list.replace("_"," ").title() }}
+            </a>
+        {% endfor %}
+
+    </div>
+
+    <!-- MOVIES GRID -->
     <div class="row">
         {% for movie in movies %}
         <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
 
-                <img class="card-img-top"
-                     src="{{ tmdb_image_url(movie.poster_path, 'w342') }}"
-                     alt="{{ movie.title }}">
+                {% if movie.poster_path %}
+                    <img class="card-img-top"
+                         src="{{ tmdb_image_url(movie.poster_path, 'w342') }}"
+                         alt="{{ movie.title }}">
+                {% else %}
+                    <img class="card-img-top"
+                         src="https://via.placeholder.com/342x513?text=Brak+plakatu"
+                         alt="Brak plakatu">
+                {% endif %}
 
                 <div class="card-body text-center">
-                    <h4 class="card-title">{{ movie.title }}</h4>
+                    <h6 class="card-title">{{ movie.title }}</h6>
                 </div>
 
                 <div class="card-footer text-center">
-                    <a href="#" class="btn btn-primary">Pokaż więcej</a>
+                    <a href="{{ url_for('movie_details', movie_id=movie.id) }}"
+                       class="btn btn-primary btn-sm">
+                       Pokaż więcej
+                    </a>
                 </div>
 
             </div>

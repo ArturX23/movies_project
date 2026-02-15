@@ -1,0 +1,122 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <!-- TITLE -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">{{ movie.title }}</h1>
+        {% if movie.tagline %}
+            <p class="text-muted fs-5">{{ movie.tagline }}</p>
+        {% endif %}
+    </div>
+
+    <!-- MAIN SECTION -->
+    <div class="row g-5 align-items-start">
+
+        <!-- BACKDROP IMAGE -->
+        <div class="col-lg-6">
+            {% if movie.backdrop_path %}
+                <img class="img-fluid rounded shadow-lg w-100"
+                     src="{{ tmdb_image_url(movie.backdrop_path, 'w780') }}"
+                     alt="{{ movie.title }}"
+                     style="max-height:420px; object-fit:cover;">
+            {% else %}
+                <img class="img-fluid rounded shadow-lg w-100"
+                     src="https://via.placeholder.com/780x420?text=Brak+obrazu"
+                     alt="Brak obrazu">
+            {% endif %}
+        </div>
+
+        <!-- DETAILS -->
+        <div class="col-lg-6">
+
+            <!-- OVERVIEW -->
+            <div class="mb-4">
+                <h4>Opis</h4>
+                <p class="text-muted">
+                    {{ movie.overview or "Brak opisu filmu." }}
+                </p>
+            </div>
+
+            <!-- INFO CARD -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <dl class="row mb-0">
+
+                        <dt class="col-sm-4">Data premiery</dt>
+                        <dd class="col-sm-8">{{ movie.release_date }}</dd>
+
+                        <dt class="col-sm-4">Budżet</dt>
+                        <dd class="col-sm-8">
+                            {% if movie.budget %}
+                                ${{ "{:,}".format(movie.budget) }}
+                            {% else %}
+                                brak danych
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Ocena</dt>
+                        <dd class="col-sm-8">
+                            <div class="progress">
+                                <div class="progress-bar"
+                                     style="width: {{ movie.vote_average * 10 }}%">
+                                    {{ movie.vote_average }}/10
+                                </div>
+                            </div>
+                        </dd>
+
+                        <dt class="col-sm-4">Gatunki</dt>
+                        <dd class="col-sm-8">
+                            {% if movie.genres %}
+                                {% for genre in movie.genres %}
+                                    <span class="badge bg-dark me-1">
+                                        {{ genre.name }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                brak
+                            {% endif %}
+                        </dd>
+
+                    </dl>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CAST SECTION -->
+    {% if cast %}
+    <div class="mt-5">
+        <h3 class="mb-4">Obsada</h3>
+        <div class="row">
+            {% for actor in cast %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <figure class="figure text-center w-100">
+
+                    {% if actor.profile_path %}
+                        <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}"
+                             class="figure-img img-fluid rounded shadow-sm"
+                             alt="{{ actor.name }}">
+                    {% else %}
+                        <!-- statyczny placeholder -->
+                        <img src="https://via.placeholder.com/185x278?text=Brak+zdjęcia"
+                             class="figure-img img-fluid rounded shadow-sm"
+                             alt="{{ actor.name }}">
+                    {% endif %}
+
+                    <figcaption class="figure-caption mt-2">
+                        <strong>{{ actor.name }}</strong><br>
+                        <small class="text-muted">{{ actor.character }}</small>
+                    </figcaption>
+
+                </figure>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
