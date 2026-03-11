@@ -2,7 +2,6 @@ import tmdb_client
 from unittest.mock import Mock
 import pytest
 
-
 def test_get_poster_url_uses_default_size():
     """Sprawdza, czy URL plakatu zawiera domyślny rozmiar i ścieżkę."""
     poster_api_path = "/test-path.jpg"
